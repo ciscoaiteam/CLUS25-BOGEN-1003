@@ -4,7 +4,8 @@
 
 This is the most important demo in the suite. It demonstrates a powerful assistant designed to aid in network operations. The AI agent audits firmware versions, builds upgrade plans, and proposes workflows with optional ITSM approvals.
 
-[Link Text](https://example.com)
+Link to Vidcast -[Link Text](https://example.com)
+Langgraph Studio URL [Link Text](https://example.com)
 
 ## 🚶 Walkthrough
 

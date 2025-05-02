@@ -4,7 +4,8 @@
 
 This demo showcases a friendly conversational assistant that helps a user prepare for a vacation. The use case highlights multi-turn reasoning and external data sources to create a travel plan based on natural language input.
 
-[Link Text](https://example.com)
+Link to Vidcast -[Link Text](https://example.com)
+Langgraph Studio URL [Link Text](https://example.com)
 
 ## 🚶 Walkthrough
 
