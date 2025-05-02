@@ -1,8 +1,10 @@
-# Demo 3: CAT Center Automation Assistant
+# Demo 3: Network Automation Assistant
 
 ## 📘 Overview
 
 This is the most important demo in the suite. It demonstrates a powerful assistant designed to aid in network operations. The AI agent audits firmware versions, builds upgrade plans, and proposes workflows with optional ITSM approvals.
+
+[Link Text](https://example.com)
 
 ## 🚶 Walkthrough
 
