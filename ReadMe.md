@@ -15,7 +15,7 @@ This concise demo shows how LLMs can act as smart virtual assistants for real-li
 Link to Vidcast -[Link Text](https://example.com)
 Langgraph Studio URL [Link Text](https://example.com)
 
-## 🧠 Demo 3: CAT Center Automation Assistant *(Most Important)*
+## 🧠 Demo 3: Nexus Dashbaord Automation Assistant 
 The highlight of the suite, this demo introduces an AI-driven assistant for network operations. It discovers outdated firmware across devices, builds a tailored upgrade plan (including config changes, backout strategy, and scheduling), and optionally integrates human-in-the-loop approvals via ITSM tools.
 
 Link to Vidcast -[Link Text](https://example.com)
