@@ -7,7 +7,7 @@ This repository contains a collection of interactive AI-powered demos built for 
 Demo 1 showcases a basic question/answer system with response refinement. It illustrates how even simple LLM interactions can be improved for accuracy, tone, or completeness with minimal effort. It serves as the foundation for more complex NLP workflows.
 
 
-CoLab URL [Link](https://colab.research.google.com/drive/1cGXFjF8znKxdV48-b6fmL-sc_9qYWF5k?usp=sharing)
+CoLab URL [Link](https://colab.research.google.com/drive/1EbE3kQS8FC_78w_PGLOObzjngH6y7iUY#scrollTo=QR2qLmYuSf-k)
 
 ## ✈️ Demo 2: Vacation Planner (Conversational AI)
 ### Requires LangSmith Login 
