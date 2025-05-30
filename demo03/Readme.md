@@ -4,7 +4,9 @@
 
 This LangGraph Studio project demonstrates an AI-powered assistant designed to streamline and automate the process of Cisco Nexus firmware upgrades. The agent intelligently audits firmware, gathers contextual information from ITSM systems, formulates a detailed upgrade plan, and submits it for approval. This project showcases the power of AI agents, tool usage, and iterative workflows in complex network operations, making it an excellent demonstration for presentations on Agent and Tool calls and iterative workflow capabilities.
 
-   - Langgraph Studio URL - [link]
+Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo03-v3-7cf65eeccbcd5e8c9f139d63da37a8a9.us.langgraph.app)
+- Backup Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo03-v3-7cf65eeccbcd5e8c9f139d63da37a8a9.us.langgraph.app)
+> Please audit my datacenter networkaing environment for out of date firmware and provide a upgrade and change managment review.
 
 
 ### ✨ Features & Functions
