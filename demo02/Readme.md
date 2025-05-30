@@ -4,9 +4,9 @@
 
 This LangGraph Studio project demonstrates an AI-powered assistant designed to streamline and automate the process of vacation planning. The agent intelligently gathers information about weather, activities, and flights, formulates a detailed trip plan, and presents it to the user. This project showcases the power of AI agents, tool usage, and iterative workflows in a real-world scenario, making it an excellent demonstration for presentations on Agent and Tool calls and iterative workflow capabilities. This demo requires a LangSmith Login.
 
-Langgraph Studio URL: [Langgraph Studio URL Link]
-
-Backup Langgraph Studio URL: [Backup Langgraph Studio URL Link]
+Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
+- Backup Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
+> Please plan a trip to Paris, Texas for 5 days with my family in August.  We will be leaving from San Joes, CA
 
 ## ✨ Features & Functions
 
