@@ -23,7 +23,7 @@ This technical demo showcases an AI-driven assistant for network operations. It 
 
 Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo03-v3-7cf65eeccbcd5e8c9f139d63da37a8a9.us.langgraph.app)
 - Backup Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo03-v3-7cf65eeccbcd5e8c9f139d63da37a8a9.us.langgraph.app)
-> Please audit my datacenter networkaing environment for out of date firmware and provide a upgrade and change managment review.
+> Please audit my datacenter networking environment for out of date firmware and provide a upgrade and change management review.
 
   
 Each demo is self-contained and explained in its respective folder.
