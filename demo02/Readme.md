@@ -6,7 +6,71 @@ This LangGraph Studio project demonstrates an AI-powered assistant designed to s
 
 Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
 - Backup Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
-> Please plan a trip to Paris, Texas for 5 days with my family in August.  We will be leaving from San Joes, CA
+> Please plan a trip to Paris, France for 5 days with my family in August.  We will be leaving from San Joes, CA
+
+## 🎯 System Prompt & Agent Behavior
+
+The vacation planner operates using a carefully crafted system prompt that defines its role, workflow, and constraints. This prompt serves as the foundational instruction set that guides the AI agent through the vacation planning process.
+
+### Core Prompt Structure
+
+```python
+system_prompt = """You are a helpful vacation planning assistant.
+Your goal is to help the user plan their trip based on their request.
+The user will provide a destination, a start time (which might be relative, like 'in 10 days'), and a duration (e.g., 'for 5 days').
+To fulfill the request, you MUST use the available tools in the following order:
+1. First, use the 'WeatherSearch' tool to find the weather forecast for the destination around the specified start date.
+2. Second, use the 'ActivitySearch' tool to find potential things to do or sights to see at the destination suitable for the trip's duration.
+3. Third, use the 'FlightSearch' tool to find information about available flights to the destination around the specified start date.
+IMPORTANT: You must call the tools ONE AT A TIME in the specified order. Wait for the result of one tool call before making the next one.
+Once you have gathered information from all three tools, synthesize the results into a comprehensive plan for the user.
+!Important: Only provide information that pertains to planning this trip.  No other topics should be referenced.
+"""
+```
+
+### Prompt Design Principles
+
+The system prompt is engineered with several key design principles:
+
+**1. Clear Role Definition**
+- Establishes the agent as a "helpful vacation planning assistant"
+- Sets clear boundaries on the assistant's scope and purpose
+
+**2. Structured Workflow Enforcement**
+- Mandates a specific three-step tool execution sequence
+- Prevents parallel tool calls to ensure proper data gathering flow
+- Creates predictable, reproducible planning sessions
+
+**3. Input Parameter Specification**
+- Explicitly defines expected user inputs (destination, start time, duration)
+- Accommodates flexible time formats ("in 10 days" vs. specific dates)
+- Provides clear examples for user guidance
+
+**4. Tool Usage Constraints**
+- Enforces sequential tool execution with explicit waiting periods
+- Prevents workflow deviation that could lead to incomplete planning
+- Ensures comprehensive data collection before synthesis
+
+**5. Output Focus & Boundaries**
+- Restricts responses to trip-relevant information only
+- Prevents scope creep into unrelated topics
+- Maintains professional, focused interactions
+
+### Workflow Control Mechanisms
+
+The prompt works in conjunction with the graph architecture to control agent behavior:
+
+- **Sequential Processing:** The "ONE AT A TIME" instruction prevents race conditions and ensures data dependencies are respected
+- **State Management:** Each tool result informs the next step, building comprehensive trip context
+- **Synthesis Requirement:** Forces the agent to combine all gathered data into a cohesive plan rather than presenting raw tool outputs
+
+### Prompt Evolution & Customization
+
+This prompt structure can be easily modified to accommodate different planning scenarios:
+
+- **Specialty Travel:** Add specific tool calls for business travel, adventure trips, or family vacations
+- **Extended Planning:** Include additional tools for accommodation, restaurant reservations, or local transportation
+- **Personalization:** Incorporate user preference parameters for budget, activity types, or accommodation standards
 
 ## ✨ Features & Functions
 
@@ -68,22 +132,33 @@ To deploy this Vacation Planner yourself using LangSmith Platform, follow these 
 
 2.  **Obtain API Keys:** You will need the following API keys. These should be set as environment variables in your LangSmith deployment environment or your local environment if testing locally.
 
-    *   `ANTHROPIC_API_KEY`: Required for using Anthropic's language models (e.g., Claude Sonnet). The `nodes.py` file is configured to potentially use Anthropic models, and `call_model` defaults to "anthropic" if no model is specified in the graph config.
-    *   `OPENAI_API_KEY` (Optional): If you plan to configure the agent to use OpenAI models (e.g., GPT-4o) as supported in `nodes.py`.
+    *   `ANTHROPIC_API_KEY`: (Optional) Required for using Anthropic's language models (e.g., Claude Sonnet). The `nodes.py` file is configured to potentially use Anthropic models, and `call_model` defaults to "anthropic" if no model is specified in the graph config.
+    *   `OPENAI_API_KEY` (Required): If you plan to configure the agent to use OpenAI models (e.g., GPT-4o) as supported in `nodes.py`.
     *   `TAVILY_API_KEY`: Required for the `TavilySearchResults` used in `tools.py`.
 
-3.  **Deploy via LangSmith Platform:**
-
+3.  **Deploy:**
+	
+	***LangSmith Platform***
     *   Ensure your project (the cloned folder content) is in a Git repository accessible by LangSmith.
     *   Navigate to your LangSmith account and follow the platform's documentation to deploy a new LangGraph agent or application from your Git repository.
     *   During the LangSmith deployment configuration:
         *   Point LangSmith to your repository and specify the main branch or file that exposes the compiled LangGraph (e.g., `agent.graph` from `agent.py`).
         *   Set the necessary environment variables in your LangSmith deployment settings (e.g., `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, and `TAVILY_API_KEY`).
     *   Once deployed, LangSmith will provide an endpoint or interface to interact with your agent.
+	
+	***Local Platform***
+	* 	Requirements : Python 3.11
+	*   From within the project directory create a virtual environment.  `python -m venv venv`
+	*   Install langgraphs studio locally.   `pip install --upgrade "langgraph-cli[inmem]"`
+	*   From within the my_agent, Install project dependencies.  `pip install -r requirements.txt`
+	*   Create a .env file with the appropriate API keys. in the my_agent folder.
+	*   Run `langgraph dev`
+	*   !! If everything workes correctly a browser should open with the correct diagrams.
+
 
 ### 🚀 Potential Expansions & Future Enhancements
 
-The current project provides a solid foundation for a vacation planning assistant. Here’s how its features could be significantly expanded upon:
+The current project provides a solid foundation for a vacation planning assistant. Here's how its features could be significantly expanded upon:
 
 1.  **Real-World Integration:**
 
