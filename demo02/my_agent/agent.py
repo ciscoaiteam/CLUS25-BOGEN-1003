@@ -1,10 +1,30 @@
-from typing import TypedDict, Literal
+# Development Mode - Allows me to run this workflow locally
+import os
+from os.path import join, dirname
+import platform
 
+# Development Mode - Only load dotenv on Windows machines; Only used for local deployments
+'''You will need to have a .env file in the my_agent folder with the correct 
+ANTHROPIC_API_KEY=...
+TAVILY_API_KEY=...
+OPENAI_API_KEY=...
+LANGSMITH_API_KEY=...
+LANGSMITH_TRACING=true
+LANGSMITH_TRACING=...
+'''
+if platform.system() == "Windows":
+    from dotenv import load_dotenv
+    dotenv_path = join(dirname(__file__), '.env')
+    load_dotenv(dotenv_path)
+
+
+# Application Imports
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from my_agent.utils.nodes import call_model, should_continue
 from my_agent.utils.state import AgentState
 from my_agent.utils.tools import weather_tool, activity_tool, flight_tool
+from typing import TypedDict, Literal
 import logging
 
 
@@ -15,7 +35,6 @@ logger = logging.getLogger(__name__)
 # Define the config
 class GraphConfig(TypedDict):
     model_name: Literal["anthropic", "openai"]
-
 
 # Define a new graph
 workflow = StateGraph(AgentState, config_schema=GraphConfig)
@@ -30,11 +49,8 @@ weather_action_node = ToolNode([weather_tool])
 activity_action_node = ToolNode([activity_tool])
 flight_action_node = ToolNode([flight_tool])
 workflow.add_node("weather_action", weather_action_node)
-logger.info("Added node: weather_action")
 workflow.add_node("activity_action", activity_action_node)
-logger.info("Added node: activity_action")
 workflow.add_node("flight_action", flight_action_node)
-logger.info("Added node: flight_action")
 
 # Set the entrypoint as `agent`
 # This means that this node is the first one called
@@ -66,11 +82,8 @@ logger.info("Added conditional edges from 'agent' based on 'should_continue'.")
 # We now add a normal edge from `tools` to `agent`.
 # This means that after `tools` is called, `agent` node is called next.
 workflow.add_edge("weather_action", "agent")
-logger.info("Added edge from 'weather_action' to 'agent'.")
 workflow.add_edge("activity_action", "agent")
-logger.info("Added edge from 'activity_action' to 'agent'.")
 workflow.add_edge("flight_action", "agent")
-logger.info("Added edge from 'flight_action' to 'agent'.")
 
 
 # Finally, we compile it!

@@ -1,8 +1,9 @@
-from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.tools import Tool, StructuredTool
 from pydantic import BaseModel, Field
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
+
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,7 +16,11 @@ For the ease of this demo, we are emulating API integration into the following 3
 
 
 def audit_firmware(devices: str) -> str:
-    '''We are simulating the Nexus Dashboard return to facilitate this demo. This is where you would build the API integration needed.'''
+    """ 
+    Used as a placeholder for the visual layer of Studio
+    Simulating the Nexus Dashboard API return to facilitate this demo.
+    This is where you would build the API integration needed 
+    """
     logger.info("Simulating firmware audit... returning static device list.")
     devicelist = {
         "devices": [
@@ -65,9 +70,19 @@ def audit_firmware(devices: str) -> str:
     }
     return json.dumps(devicelist)
 
-def generate_upgrade_plan(devices_json: str) -> str:
+# Pydantic models for input validation
+class ITSMAuditInput(BaseModel):
+    devices_json: str = Field(description="JSON string containing device information from firmware audit")
+
+# Pydantic model for ITSMApproval input validation
+class ITSMApprovalInput(BaseModel):
+    plan: str = Field(description="The complete firmware upgrade plan to submit for approval")
+
+
+def itsm_audit(devices_json: str) -> str:
     """ 
     Used as a placeholder for the visual layer of Studio
+    Simulating the ITSM API return to facilitate this demo.
     itsm_changemanagement_items - Demonstrates Change Management Logic
     itsm_outage_items - Demonstrates Outage Observability Logic 
     itsm_knowledgebase_items - Demonstrates Knowledge Base Logic  
@@ -79,7 +94,7 @@ def generate_upgrade_plan(devices_json: str) -> str:
     if not devices_json or devices_json.strip() == "":
         error_msg = "Error: devices_json parameter is required and cannot be empty. Please pass the JSON output from FirmwareAudit tool."
         logger.error(error_msg)
-        raise ValueError(error_msg)
+        return json.dumps({"error": error_msg})
 
     # Parse the input devices JSON
     try:
@@ -92,13 +107,13 @@ def generate_upgrade_plan(devices_json: str) -> str:
     except json.JSONDecodeError as e:
         error_msg = f"Error: Failed to parse devices_json. Invalid JSON format: {e}"
         logger.error(error_msg)
-        raise ValueError(error_msg)
+        return json.dumps({"error": error_msg})
         
     # Validate that devices_data has the expected structure
     if not isinstance(devices_data, dict) or "devices" not in devices_data:
         error_msg = "Error: devices_json must contain a 'devices' key with device information"
         logger.error(error_msg)
-        raise ValueError(error_msg)
+        return json.dumps({"error": error_msg})
         
     # ITSM Change Management Items - devices that have scheduled maintenance
     itsm_changemanagement_items = {
@@ -158,42 +173,53 @@ def generate_upgrade_plan(devices_json: str) -> str:
         "itsm_knowledgebase_items": itsm_knowledgebase_items
     }
     
-    logger.info("Returning combined response with devices and ITSM data.")
-    return json.dumps(combined_response)
-
-# Pydantic model for ITSMApproval input validation
-class ITSMApprovalInput(BaseModel):
-    plan: str = Field(description="The complete firmware upgrade plan to submit for approval")
+    result = json.dumps(combined_response, indent=2)
+    logger.info("ITSM audit completed successfully")
+    return result
 
 def request_itsm_approval(plan: str) -> str:
-    """Creates or links a ticket in ServiceNow/Remedy and waits for approval."""
-    logger.info("Simulating ITSM approval submission.")
+    """Submit upgrade plan for ITSM approval."""
+    logger.info("Submitting plan for ITSM approval...")
+    
     if not plan or plan.strip() == "":
         error_msg = "Error: plan parameter is required and cannot be empty"
         logger.error(error_msg)
-        raise ValueError(error_msg)
+        return error_msg
     
-    logger.info("ITSM approval ticket created successfully")
-    return f"ITSM Approval Status: SUBMITTED\nTicket ID: FWUP-{datetime.now().strftime('%Y%m%d-%H%M%S')}\nPlan: {plan}"
+    ticket_id = f"FWUP-{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+    result = f"""ITSM Approval Status: SUBMITTED
+    Ticket ID: {ticket_id}
+    Submitted At: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    Plan Summary: {plan[:200]}{'...' if len(plan) > 200 else ''}
+
+    Next Steps:
+    1. Approval workflow initiated
+    2. Technical review by network team
+    3. Business impact assessment
+    4. Final approval by change board"""
+    
+    logger.info(f"ITSM approval submitted successfully. Ticket: {ticket_id}")
+    return result
 
 # Tool definitions with clearer descriptions
 firmware_audit_tool = Tool.from_function(
     func=audit_firmware,
-    name="FirmwareAudit",
+    name="IntersightTool",
     description="Audit network devices to find those with outdated firmware. Call this first to get the device list. Returns JSON with device information including current and recommended firmware versions."
 )
 
-upgrade_plan_tool = Tool.from_function(
-    func=generate_upgrade_plan,
-    name="UpgradePlan",
-    description="Generate upgrade plan with ITSM integration data. MUST be called with the exact JSON output from FirmwareAudit as the devices_json parameter. Returns devices along with change management, outage, and knowledge base information."
+itsm_audit_tool = Tool.from_function(
+    func=itsm_audit,
+    name="ITSMAudit",
+    description="Generate upgrade plan with ITSM integration data. MUST be called with the exact JSON output from FirmwareAudit as the devices_json parameter. Returns devices along with change management, outage, and knowledge base information.",
+    args_schema=ITSMAuditInput
 )
 
-itsm_tool = StructuredTool.from_function(
+itsm_approval_tool = StructuredTool.from_function(
     func=request_itsm_approval,
     name="ITSMApproval",
     description="Submit the final upgrade plan for ITSM approval. Call this with the complete, structured upgrade plan that includes timing, priorities, and conflict analysis.",
     args_schema=ITSMApprovalInput
 )
 
-tools = [firmware_audit_tool, upgrade_plan_tool, itsm_tool]
+tools = [firmware_audit_tool, itsm_audit_tool, itsm_approval_tool]

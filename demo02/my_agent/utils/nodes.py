@@ -8,17 +8,25 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+'''
+OPEN_AI_KEY = {"key is a variable in the deployment"}
+ANTHROPIC_API_KEY = {"key is a variable in the deployment"}
+TAVILY_API_KEY = {"key is a variable in the deployment"}
+You don't need to have all 2 AI as a service vendors to run this lab, but I wanted to give the option.
+'''
+
 @lru_cache(maxsize=4)
 def _get_model(model_name: str):
+    '''Primary Open AI model with a Anthropic Failover - This could be a local vLLM installation.
+       This function allows for the Langraph Studio Assistant to select used model.
+    '''
     if model_name == "openai":
-        logger.debug("Using OpenAI model.")
-        model = ChatOpenAI(temperature=0, model_name="gpt-4o")
+        model = ChatOpenAI(temperature=0, model="gpt-4.1")
     elif model_name == "anthropic":
-        logger.debug("Using Anthropic model.")
-        model =  ChatAnthropic(temperature=0, model_name="claude-3-7-sonnet-latest")
+        model =  ChatAnthropic(temperature=0, model="claude-3-7-sonnet-latest")
     else:
-        raise ValueError(f"Unsupported model type: {model_name}")
-
+        # Failover incase a model wasn't selected in the Studio Assistant and try to use this as a default.
+        model = ChatOpenAI(temperature=0, model="gpt-4.1")
     model = model.bind_tools(tools)
     return model
 
@@ -60,30 +68,39 @@ To fulfill the request, you MUST use the available tools in the following order:
 
 IMPORTANT: You must call the tools ONE AT A TIME in the specified order. Wait for the result of one tool call before making the next one.
 
-Once you have gathered information from all three tools, synthesize the results into a comprehensive plan for the user."""
+Once you have gathered information from all three tools, synthesize the results into a comprehensive plan for the user.
+
+!Important: Only provide information that pertains to planning this trip.  No other topics should be referenced.
+"""
+
 
 # Define the function that calls the model
 def call_model(state, config):
     logger.info("Entering call_model function.")
+    
     # Get the current messages from the state
-    current_messages = state["messages"]
-    logger.debug(f"Current messages: {current_messages}")
-    # Create a SystemMessage object for the system prompt
+    current_messages = state.get("messages", [])
+    logger.debug(f"Current messages count: {len(current_messages)}")
+    
+    # Create system message
     system_message = SystemMessage(content=system_prompt)
-    # Prepend the SystemMessage, ensuring a consistent list of BaseMessage objects
     messages_with_system = [system_message] + list(current_messages)
-    logger.debug(f"Messages being sent to model: {messages_with_system}")
-    # Catch incase the LangSmith Assistent Model is blank ( LangSmith UI - Assistant )
+    
+    # Get model configuration
     configurable = config.get('configurable', {}) if config else {}
-    model_name = configurable.get("model_name") or "anthropic"
+    model_name = configurable.get("model_name", "openai")
     logger.info(f"Using model: {model_name}")
-    model = _get_model(model_name)
-    response = model.invoke(messages_with_system)
-    logger.info(f"Model response received. Type: {type(response)}")
-    logger.debug(f"Model response content: {response}")
-    # We return a list, because this will get added to the existing list
-    return {"messages": [response]}
-
-# Define individual tool nodes (though they won't be directly used here,
-# the tools list is used for binding in _get_model)
-# tool_node = ToolNode(tools) # No longer needed here for graph definition
+    
+    try:
+        model = _get_model(model_name)
+        logger.info(f"Model loaded successfully: {model}")
+        
+        response = model.invoke(messages_with_system)
+        logger.info(f"Model response received. Type: {type(response)}")
+        logger.debug(f"Response has tool_calls: {hasattr(response, 'tool_calls') and bool(response.tool_calls)}")
+        
+        return {"messages": [response]}
+        
+    except Exception as e:
+        logger.error(f"Error in call_model: {str(e)}")
+        raise
