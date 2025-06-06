@@ -15,7 +15,7 @@ This concise demo shows how Generative LLMs can act as smart virtual assistants 
 
 Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
 - Backup Langgraph Studio URL [Link](https://smith.langchain.com/studio/thread?baseUrl=https%3A%2F%2Fclus25-demo02-v3-64e5e70f82cf508bb3f81314cb16a39c.us.langgraph.app)
-> Please plan a trip to Paris, France for 5 days with my family in August.  We will be leaving from San Joes, CA
+> Please plan a trip to Paris, France for 5 days with my family in August.  We will be leaving from San Jose, CA
 
 ## 🧠 Demo 3: Nexus Dashbaord Automation Assistant 
 ### Requires LangSmith Login 
